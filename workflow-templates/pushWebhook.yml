@@ -1,15 +1,36 @@
 name: discord message
 on: [push]
 jobs:
-
   build:
     name: Build
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-    - name: send custom message with args
-      uses: appleboy/discord-action@master
-      with:
-        webhook_id: ${{ secrets.WEBHOOK_ID }}
-        webhook_token: ${{ secrets.WEBHOOK_TOKEN }}
-        args: ${{ github.event_name }} event triggered first step.
+      - uses: actions/checkout@v2
+      - name: send custom message with args
+        uses: appleboy/discord-action@master
+        with:
+          webhook_id: ${{ secrets.WEBHOOK_ID }}
+          webhook_token: ${{ secrets.WEBHOOK_TOKEN }}
+          content: |
+            {
+              "embeds": [
+                {
+                  "title": "GitHub Event",
+                  "color": 3841693,
+                  "fields": [
+                    {
+                      "name": "Event Type",
+                      "value": "${{ github.event_name }}"
+                    },
+                    {
+                      "name": "Repository",
+                      "value": "${{ github.repository }}"
+                    },
+                    {
+                      "name": "Sender",
+                      "value": "${{ github.actor }}"
+                    }
+                  ]
+                }
+              ]
+            }
